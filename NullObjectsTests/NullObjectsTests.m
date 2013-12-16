@@ -8,6 +8,8 @@
 
 #import <XCTest/XCTest.h>
 
+#import "NullObjects.h"
+
 @interface NullObjectsTests : XCTestCase
 
 @end
@@ -26,9 +28,28 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testNull
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    id simpleNull = (id) [NONull null];
+    
+    XCTAssertNoThrow([simpleNull lastObject], @"[NONull null] never should raise exception");
+    XCTAssertNoThrow([[simpleNull firstObject] stringValue], @"[NONull null] never should raise exception");
+    XCTAssertNoThrow([simpleNull objectForKey:@"key"], @"[NONull null] never should raise exception");
+    
+    XCTAssertEqual((__bridge void *)[simpleNull firstObject], nil, @"[NONull null] should return nil for any method");
+    XCTAssertEqual((__bridge void *)[simpleNull objectForKey:@"key"], nil, @"[NONull null] should return nil for any method");
+}
+
+- (void)testBlackholeNull
+{
+    id blackhole = (id) [NONull blackhole];
+    
+    XCTAssertNoThrow([blackhole lastObject], @"[NONull blackhole] never should raise exception");
+    XCTAssertNoThrow([[blackhole firstObject] stringValue], @"[NONull blackhole] never should raise exception");
+    XCTAssertNoThrow([blackhole objectForKey:@"key"], @"[NONull blackhole] never should raise exception");
+    
+    XCTAssertEqual([blackhole firstObject], blackhole, @"[NONull null] should return self for any method");
+    XCTAssertEqual([blackhole objectForKey:@"key"], blackhole, @"[NONull null] should return self for any method");
 }
 
 @end

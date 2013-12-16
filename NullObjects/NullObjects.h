@@ -6,8 +6,4 @@
 //  Copyright (c) 2013 Endika Gutiérrez Salas. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-@interface NullObjects : NSObject
-
-@end
+#import "NONull.h"

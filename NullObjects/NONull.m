@@ -1,0 +1,111 @@
+//
+//  NONull.m
+//  NullObjects
+//
+//  Created by Endika Gutiérrez Salas on 16/12/13.
+//  Copyright (c) 2013 Endika Gutiérrez Salas. All rights reserved.
+//
+
+#import "NONull.h"
+
+#import <objc/runtime.h>
+
+NSString * const NONullDummyMethodBlock = @"NODummyMethodBlock";
+NSString * const NONullBlackHole = @"NONullBlackHole";
+
+id dummyMethod(id self, SEL _cmd) {
+    return nil;
+}
+
+id dummyMethodBlackhole(id self, SEL _cmd) {
+    return self;
+}
+
+IMP getDummyMethodBlackhole(id self, SEL _cmd) {
+    return (IMP) dummyMethodBlackhole;
+}
+
+static NONull *nullSingleton = nil;
+
+@implementation NONull
+
+- (id)init
+{
+    if (nullSingleton)
+        return nullSingleton;
+    
+    return [super init];
+}
+
++ (instancetype)null
+{
+    if (!nullSingleton) {
+        nullSingleton = [[NONull alloc] init];
+    }
+    return nullSingleton;
+}
+
++ (instancetype)blackhole
+{
+    static NONull *blackhole = nil;
+    if (!blackhole) {
+        blackhole = [NONull nullWithOptions:@{NONullBlackHole: @YES}];
+    }
+    return blackhole;
+}
+
++ (instancetype)nullWithOptions:(NSDictionary *)options
+{
+    return [[[self nullClassWithOptions:options] alloc] init];
+}
+
++ (Class)nullClassWithOptions:(NSDictionary *)options;
+{
+    static int nullId = 1;
+    
+    // Build new class
+    NSString *newClassName = [NSString stringWithFormat:@"%@+%i", self.class, nullId];
+    Class NullClass = objc_allocateClassPair(self, [newClassName UTF8String], 0);
+    
+    if (options[NONullDummyMethodBlock]) {
+        id dummyMethodBlock = options[NONullDummyMethodBlock];
+        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), imp_implementationWithBlock(dummyMethodBlock), "^@:");
+    }
+    
+    if ([options[NONullBlackHole] boolValue]) {
+        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), (IMP) getDummyMethodBlackhole, "^@:");
+    }
+    
+    objc_registerClassPair(NullClass);
+    return NullClass;
+}
+
++ (IMP)dummyMethodIMP
+{
+    // Default dummy method implementation
+    return (IMP) dummyMethod;
+}
+
++ (BOOL)resolveInstanceMethod:(SEL)sel
+{
+    class_addMethod(self, sel, [self dummyMethodIMP], "v@:");
+    return YES;
+}
+
++ (BOOL)resolveClassMethod:(SEL)sel
+{
+    class_addMethod(object_getClass(self), sel, [self dummyMethodIMP], "v@:");
+    return YES;
+}
+
+- (id)valueForUndefinedKey:(NSString *)key
+{
+    return nil;
+}
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    // Do nothing
+}
+
+@end
