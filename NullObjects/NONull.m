@@ -12,6 +12,7 @@
 
 NSString * const NONullDummyMethodBlock = @"NODummyMethodBlock";
 NSString * const NONullBlackHole = @"NONullBlackHole";
+NSString * const NOTraceable = @"NOTraceable";
 
 id dummyMethod(id self, SEL _cmd) {
     return nil;
@@ -25,20 +26,11 @@ IMP getDummyMethodBlackhole(id self, SEL _cmd) {
     return (IMP) dummyMethodBlackhole;
 }
 
-static NONull *nullSingleton = nil;
-
 @implementation NONull
-
-- (id)init
-{
-    if (nullSingleton)
-        return nullSingleton;
-    
-    return [super init];
-}
 
 + (instancetype)null
 {
+    static NONull *nullSingleton = nil;
     if (!nullSingleton) {
         nullSingleton = [[NONull alloc] init];
     }
@@ -96,16 +88,6 @@ static NONull *nullSingleton = nil;
 {
     class_addMethod(object_getClass(self), sel, [self dummyMethodIMP], "v@:");
     return YES;
-}
-
-- (id)valueForUndefinedKey:(NSString *)key
-{
-    return nil;
-}
-
-- (void)setValue:(id)value forUndefinedKey:(NSString *)key
-{
-    // Do nothing
 }
 
 @end

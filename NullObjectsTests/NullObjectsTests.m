@@ -49,7 +49,9 @@
     XCTAssertNoThrow([blackhole objectForKey:@"key"], @"[NONull blackhole] never should raise exception");
     
     XCTAssertEqual([blackhole firstObject], blackhole, @"[NONull null] should return self for any method");
+    XCTAssertEqual([[[blackhole firstObject] firstObject] string], blackhole, @"[NONull null] should return self for any method");
     XCTAssertEqual([blackhole objectForKey:@"key"], blackhole, @"[NONull null] should return self for any method");
+    XCTAssertEqual(blackhole[@"key"], blackhole, @"[NONull null] should return self for any method");
 }
 
 @end
