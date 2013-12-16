@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const NODummyMethodBlock;
+extern NSString * const NONullDummyMethodBlock;
 extern NSString * const NONullBlackHole;
 
 @interface NONull : NSObject

@@ -55,19 +55,28 @@ IMP getDummyMethodBlackhole(id self, SEL _cmd) {
     static int nullId = 1;
     
     // Build new class
-    NSString *newClassName = [NSString stringWithFormat:@"%@+%i", self.class, nullId];
+    NSString *newClassName = [NSString stringWithFormat:@"NONull$DynamicClass-%i", nullId++];
     Class NullClass = objc_allocateClassPair(self, [newClassName UTF8String], 0);
-    
+
     if (options[NONullDummyMethodBlock]) {
         id dummyMethodBlock = options[NONullDummyMethodBlock];
-        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), imp_implementationWithBlock(dummyMethodBlock), "^@:");
+
+        IMP (^dummyMethodImpBuilder)(id self, SEL _cmd) = ^ IMP (id self, SEL _cmd) {
+            return imp_implementationWithBlock(dummyMethodBlock);
+        };
+
+        class_addMethod(object_getClass(NullClass),
+                        @selector(dummyMethodIMP),
+                        imp_implementationWithBlock(dummyMethodImpBuilder),
+                        "^@:");
     }
-    
+
     if ([options[NONullBlackHole] boolValue]) {
         class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), (IMP) getDummyMethodBlackhole, "^@:");
     }
-    
+
     objc_registerClassPair(NullClass);
+
     return NullClass;
 }
 
@@ -79,14 +88,19 @@ IMP getDummyMethodBlackhole(id self, SEL _cmd) {
 
 + (BOOL)resolveInstanceMethod:(SEL)sel
 {
-    class_addMethod(self, sel, [self dummyMethodIMP], "v@:");
+    class_addMethod(self, sel, [self dummyMethodIMP], "@@:");
     return YES;
 }
 
 + (BOOL)resolveClassMethod:(SEL)sel
 {
-    class_addMethod(object_getClass(self), sel, [self dummyMethodIMP], "v@:");
+    class_addMethod(object_getClass(self), sel, [self dummyMethodIMP], "@@:");
     return YES;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    return [object isKindOfClass:[NONull class]];
 }
 
 @end

@@ -339,6 +339,7 @@
 		0DDBCE47185F414C00B42744 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/NullObjects.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NullObjects/NullObjects-Prefix.pch";
@@ -351,6 +352,7 @@
 		0DDBCE48185F414C00B42744 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/NullObjects.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NullObjects/NullObjects-Prefix.pch";

@@ -54,6 +54,23 @@
     XCTAssertEqual(blackhole[@"key"], blackhole, @"[NONull null] should return self for any method");
 }
 
+- (void)testCustomDummyMethod
+{
+    __block BOOL called = NO;
+
+    id (^dummyMethod)(id, SEL) = ^ id (id self, SEL _cmd) {
+        called = YES;
+        return @"CALLED";
+    };
+
+    id customNull = [NONull nullWithOptions:@{NONullDummyMethodBlock: [dummyMethod copy]}];
+
+    [customNull lastObject];
+
+    XCTAssertTrue(called, @"Dummy method block should be called.");
+    XCTAssertEqualObjects([customNull lastObject], @"CALLED", @"Dummy method return should work.");
+}
+
 - (void)testNSNullActAsNullObject
 {
     [NSNull actAsNullObject];
