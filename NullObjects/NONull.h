@@ -26,8 +26,20 @@ extern NSString * const NONullBlackHole;
  */
 + (instancetype)blackhole;
 
-+ (Class)nullClassWithOptions:(NSDictionary *)options;
-
+/**
+ *
+ * @return instance of dynamic class wih dictionary options.
+ */
 + (instancetype)nullWithOptions:(NSDictionary *)options;
+
+@end
+
+@interface NONull ()
+
+/**
+ *
+ * @return dynamic class for options
+ */
++ (Class)nullClassWithOptions:(NSDictionary *)options;
 
 @end

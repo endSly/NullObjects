@@ -59,16 +59,13 @@ IMP getDummyMethodBlackhole(id self, SEL _cmd) {
     Class NullClass = objc_allocateClassPair(self, [newClassName UTF8String], 0);
 
     if (options[NONullDummyMethodBlock]) {
-        id dummyMethodBlock = options[NONullDummyMethodBlock];
+        const id dummyMethodBlock = options[NONullDummyMethodBlock];
 
-        IMP (^dummyMethodImpBuilder)(id self, SEL _cmd) = ^ IMP (id self, SEL _cmd) {
+        IMP dummyMethodImpBuilder = imp_implementationWithBlock(^IMP(id self, SEL _cmd) {
             return imp_implementationWithBlock(dummyMethodBlock);
-        };
+        });
 
-        class_addMethod(object_getClass(NullClass),
-                        @selector(dummyMethodIMP),
-                        imp_implementationWithBlock(dummyMethodImpBuilder),
-                        "^@:");
+        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), dummyMethodImpBuilder, "^@:");
     }
 
     if ([options[NONullBlackHole] boolValue]) {
