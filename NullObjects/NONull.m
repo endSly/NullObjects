@@ -13,15 +13,15 @@
 NSString * const NONullDummyMethodBlock = @"NODummyMethodBlock";
 NSString * const NONullBlackHole = @"NONullBlackHole";
 
-id dummyMethod(id self, SEL _cmd) {
+static id dummyMethod(id self, SEL _cmd) {
     return nil;
 }
 
-id dummyMethodBlackhole(id self, SEL _cmd) {
+static id dummyMethodBlackhole(id self, SEL _cmd) {
     return self;
 }
 
-IMP getDummyMethodBlackhole(id self, SEL _cmd) {
+static IMP getDummyMethodBlackhole(id self, SEL _cmd) {
     return (IMP) dummyMethodBlackhole;
 }
 
