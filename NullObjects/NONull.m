@@ -12,7 +12,6 @@
 
 NSString * const NONullDummyMethodBlock = @"NODummyMethodBlock";
 NSString * const NONullBlackHole = @"NONullBlackHole";
-NSString * const NOTraceable = @"NOTraceable";
 
 id dummyMethod(id self, SEL _cmd) {
     return nil;

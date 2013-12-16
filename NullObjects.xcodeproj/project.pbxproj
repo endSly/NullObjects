@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D149D65185F49D300A39AF6 /* NONull.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D149D64185F49D300A39AF6 /* NONull.m */; };
+		0D149D68185F614F00A39AF6 /* NSNull+NullObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D149D67185F614F00A39AF6 /* NSNull+NullObjects.m */; };
 		0DDBCE27185F414C00B42744 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DDBCE26185F414C00B42744 /* Foundation.framework */; };
 		0DDBCE2C185F414C00B42744 /* NullObjects.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0DDBCE2B185F414C00B42744 /* NullObjects.h */; };
 		0DDBCE35185F414C00B42744 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DDBCE34185F414C00B42744 /* XCTest.framework */; };
@@ -44,6 +45,8 @@
 /* Begin PBXFileReference section */
 		0D149D63185F49D300A39AF6 /* NONull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NONull.h; sourceTree = "<group>"; };
 		0D149D64185F49D300A39AF6 /* NONull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NONull.m; sourceTree = "<group>"; };
+		0D149D66185F614F00A39AF6 /* NSNull+NullObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNull+NullObjects.h"; sourceTree = "<group>"; };
+		0D149D67185F614F00A39AF6 /* NSNull+NullObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNull+NullObjects.m"; sourceTree = "<group>"; };
 		0DDBCE23185F414C00B42744 /* libNullObjects.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNullObjects.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DDBCE26185F414C00B42744 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0DDBCE2A185F414C00B42744 /* NullObjects-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NullObjects-Prefix.pch"; sourceTree = "<group>"; };
@@ -114,6 +117,8 @@
 				0DDBCE2B185F414C00B42744 /* NullObjects.h */,
 				0D149D63185F49D300A39AF6 /* NONull.h */,
 				0D149D64185F49D300A39AF6 /* NONull.m */,
+				0D149D66185F614F00A39AF6 /* NSNull+NullObjects.h */,
+				0D149D67185F614F00A39AF6 /* NSNull+NullObjects.m */,
 				0DDBCE29185F414C00B42744 /* Supporting Files */,
 			);
 			path = NullObjects;
@@ -227,6 +232,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D149D65185F49D300A39AF6 /* NONull.m in Sources */,
+				0D149D68185F614F00A39AF6 /* NSNull+NullObjects.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,6 +376,13 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "NullObjectsTests/NullObjectsTests-Info.plist";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -387,6 +400,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NullObjects/NullObjects-Prefix.pch";
 				INFOPLIST_FILE = "NullObjectsTests/NullObjectsTests-Info.plist";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
 			};
