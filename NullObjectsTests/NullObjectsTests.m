@@ -78,6 +78,16 @@
     [nullTraceable stringByAppendingString:@"test"]; // Should display log
 }
 
+- (void)testExplicitConversions
+{
+    id null = [NONull nullClassWithOptions:@{NONullDefineExplicitConversions: @YES}];
+    
+    XCTAssertEqual([null intValue], 0, @"Explicit conversions intValue should return 0.");
+    XCTAssertEqual([null integerValue], 0, @"Explicit conversions integerValue should return 0.");
+    XCTAssertEqual([null boolValue], NO, @"Explicit conversions boolValue should return NO.");
+    XCTAssertEqualObjects([null stringValue], @"", @"Explicit conversions stringValue should return empty string.");
+}
+
 - (void)testNSNullActAsNullObject
 {
     [NSNull actAsNullObject];
