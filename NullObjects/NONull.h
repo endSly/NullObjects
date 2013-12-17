@@ -11,6 +11,7 @@
 extern NSString * const NONullDummyMethodBlock;
 extern NSString * const NONullBlackHole;
 extern NSString * const NONullTraceable;
+extern NSString * const NONullDefineExplicitConversions;
 
 @interface NONull : NSObject
 
