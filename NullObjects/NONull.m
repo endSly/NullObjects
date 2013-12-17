@@ -84,28 +84,30 @@ SINGLETON(traceable, [NONull nullWithOptions:@{NONullTraceable: @YES}])
     NSString *newClassName = [NSString stringWithFormat:@"NONull$DynamicClass-%i", nullId++];
     Class NullClass = objc_allocateClassPair(self, [newClassName UTF8String], 0);
     
+    id clss = object_getClass(NullClass);
+    
     if (options[NONullDummyMethodBlock]) {
         const id block = options[NONullDummyMethodBlock];
-        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), IMP_getterBlock(block), "^@:");
+        class_addMethod(clss, @selector(dummyMethodIMP), IMP_getterBlock(block), "^@:");
     }
 
     if ([options[NONullBlackHole] boolValue]) {
-        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), IMP_getter(dummyMethodBlackhole), "^@:");
+        class_addMethod(clss, @selector(dummyMethodIMP), IMP_getter(dummyMethodBlackhole), "^@:");
     }
     
     if ([options[NONullTraceable] boolValue]) {
-        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), IMP_getter(dummyMethodStacktrace), "^@:");
+        class_addMethod(clss, @selector(dummyMethodIMP), IMP_getter(dummyMethodStacktrace), "^@:");
     }
     
     if ([options[NONullDefineExplicitConversions] boolValue]) {
-        class_addMethod(NullClass, @selector(stringValue),   IMP_getterBlock(^{ return @""; }),  "@@:");
-        class_addMethod(NullClass, @selector(intValue),      IMP_getterBlock(^{ return 0; }),    "i@:");
-        class_addMethod(NullClass, @selector(integerValue),  IMP_getterBlock(^{ return 0; }),    "l@:");
-        class_addMethod(NullClass, @selector(longLongValue), IMP_getterBlock(^{ return 0L; }),   "q@:");
-        class_addMethod(NullClass, @selector(floatValue),    IMP_getterBlock(^{ return 0.0f; }), "f@:");
-        class_addMethod(NullClass, @selector(boolValue),     IMP_getterBlock(^{ return NO; }),   "i@:");
-        class_addMethod(NullClass, @selector(length),        IMP_getterBlock(^{ return 0; }),    "i@:");
-        class_addMethod(NullClass, @selector(count),         IMP_getterBlock(^{ return 0; }),    "i@:");
+        class_addMethod(clss, @selector(stringValue),   imp_implementationWithBlock(^{ return @""; }),  "@@:");
+        class_addMethod(clss, @selector(intValue),      imp_implementationWithBlock(^{ return 0; }),    "i@:");
+        class_addMethod(clss, @selector(integerValue),  imp_implementationWithBlock(^{ return 0; }),    "l@:");
+        class_addMethod(clss, @selector(longLongValue), imp_implementationWithBlock(^{ return 0L; }),   "q@:");
+        class_addMethod(clss, @selector(floatValue),    imp_implementationWithBlock(^{ return 0.0f; }), "f@:");
+        class_addMethod(clss, @selector(boolValue),     imp_implementationWithBlock(^{ return NO; }),   "i@:");
+        class_addMethod(clss, @selector(length),        imp_implementationWithBlock(^{ return 0; }),    "i@:");
+        class_addMethod(clss, @selector(count),         imp_implementationWithBlock(^{ return 0; }),    "i@:");
     }
 
     objc_registerClassPair(NullClass);
