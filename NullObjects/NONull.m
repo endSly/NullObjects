@@ -10,8 +10,9 @@
 
 #import <objc/runtime.h>
 
-NSString * const NONullDummyMethodBlock = @"NODummyMethodBlock";
+NSString * const NONullDummyMethodBlock = @"NONullDummyMethodBlock";
 NSString * const NONullBlackHole = @"NONullBlackHole";
+NSString * const NONullTraceable = @"NONullTraceable";
 
 static id dummyMethod(id self, SEL _cmd) {
     return nil;
@@ -21,9 +22,25 @@ static id dummyMethodBlackhole(id self, SEL _cmd) {
     return self;
 }
 
-static IMP getDummyMethodBlackhole(id self, SEL _cmd) {
-    return (IMP) dummyMethodBlackhole;
+static id dummyMethodStacktrace(id self, SEL _cmd) {
+    NSArray *stacktrace = [NSThread callStackSymbols];
+    // Remove top object that is call to this block
+    stacktrace = [stacktrace subarrayWithRange:NSMakeRange(1, stacktrace.count - 1)];
+    NSLog(@"[NullObjects] Called to null object with selector: %s\n"
+          "Stacktrace:\n%@", sel_getName(_cmd), [stacktrace componentsJoinedByString:@"\n"]);
+    
+    return nil;
 }
+
+#define IMP_getter(method)                              \
+(imp_implementationWithBlock(^IMP(id self, SEL _cmd) {  \
+    return (IMP) (method);                                \
+}))
+
+#define IMP_getterBlock(block)                          \
+(imp_implementationWithBlock(^IMP(id self, SEL _cmd) {  \
+    return imp_implementationWithBlock(block);          \
+}))
 
 @implementation NONull
 
@@ -57,19 +74,18 @@ static IMP getDummyMethodBlackhole(id self, SEL _cmd) {
     // Build new class
     NSString *newClassName = [NSString stringWithFormat:@"NONull$DynamicClass-%i", nullId++];
     Class NullClass = objc_allocateClassPair(self, [newClassName UTF8String], 0);
-
+    
     if (options[NONullDummyMethodBlock]) {
-        const id dummyMethodBlock = options[NONullDummyMethodBlock];
-
-        IMP dummyMethodImpBuilder = imp_implementationWithBlock(^IMP(id self, SEL _cmd) {
-            return imp_implementationWithBlock(dummyMethodBlock);
-        });
-
-        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), dummyMethodImpBuilder, "^@:");
+        const id block = options[NONullDummyMethodBlock];
+        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), IMP_getterBlock(block), "^@:");
     }
 
     if ([options[NONullBlackHole] boolValue]) {
-        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), (IMP) getDummyMethodBlackhole, "^@:");
+        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), IMP_getter(dummyMethodBlackhole), "^@:");
+    }
+    
+    if ([options[NONullTraceable] boolValue]) {
+        class_addMethod(object_getClass(NullClass), @selector(dummyMethodIMP), IMP_getter(dummyMethodStacktrace), "^@:");
     }
 
     objc_registerClassPair(NullClass);

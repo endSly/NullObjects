@@ -71,17 +71,21 @@
     XCTAssertEqualObjects([customNull lastObject], @"CALLED", @"Dummy method return should work.");
 }
 
+- (void)testNullTraceable
+{
+    id nullTraceable = (id) [NONull nullWithOptions:@{NONullTraceable: @YES}];
+    
+    [nullTraceable stringByAppendingString:@"test"]; // Should display log
+}
+
 - (void)testNSNullActAsNullObject
 {
     [NSNull actAsNullObject];
     
     id simpleNull = (id) [NSNull null];
     
-    XCTAssertNoThrow([simpleNull lastObject], @"[NSNull actAsNullObject] never should raise exception");
-    XCTAssertNoThrow([[simpleNull firstObject] stringValue], @"[NONull null] never should raise exception");
-    XCTAssertNoThrow([simpleNull objectForKey:@"key"], @"[NONull null] never should raise exception");
+    XCTAssertNoThrow([[simpleNull objectForKey:@"key"] stringValue], @"[NONull null] never should raise exception");
     
-    XCTAssertEqual((__bridge void *)[simpleNull firstObject], nil, @"[NONull null] should return nil for any method");
     XCTAssertEqual((__bridge void *)[simpleNull objectForKey:@"key"], nil, @"[NONull null] should return nil for any method");
 }
 
@@ -91,14 +95,9 @@
     
     id blackhole = (id) [NSNull null];
     
-    XCTAssertNoThrow([blackhole lastObject], @"[NONull blackhole] never should raise exception");
-    XCTAssertNoThrow([[blackhole firstObject] stringValue], @"[NONull blackhole] never should raise exception");
-    XCTAssertNoThrow([blackhole objectForKey:@"key"], @"[NONull blackhole] never should raise exception");
+    XCTAssertNoThrow([[blackhole objectForKey:@"key"] stringValue], @"[NONull blackhole] never should raise exception");
     
-    XCTAssertEqual([blackhole firstObject], blackhole, @"[NONull null] should return self for any method");
-    XCTAssertEqual([[[blackhole firstObject] firstObject] string], blackhole, @"[NONull null] should return self for any method");
-    XCTAssertEqual([blackhole objectForKey:@"key"], blackhole, @"[NONull null] should return self for any method");
-    XCTAssertEqual(blackhole[@"key"], blackhole, @"[NONull null] should return self for any method");
+    XCTAssertEqual([[[blackhole objectForKey:@"key"] firstObject] string], blackhole, @"[NONull null] should return self for any method");
 }
 
 
