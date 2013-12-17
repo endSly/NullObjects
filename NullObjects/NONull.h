@@ -28,6 +28,13 @@ extern NSString * const NONullTraceable;
 + (instancetype)blackhole;
 
 /**
+ * Returns the singleton instance of <code>NONull</code> traceable.
+ * Traceable logs when undefined method is called.
+ * @return singleton instance of <code>NONull</code> traceable.
+ */
++ (instancetype)traceable;
+
+/**
  *
  * @return instance of dynamic class wih dictionary options.
  */

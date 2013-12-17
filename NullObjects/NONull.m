@@ -14,6 +14,8 @@ NSString * const NONullDummyMethodBlock = @"NONullDummyMethodBlock";
 NSString * const NONullBlackHole = @"NONullBlackHole";
 NSString * const NONullTraceable = @"NONullTraceable";
 
+#pragma mark - Predefined dummy methods
+
 static id dummyMethod(id self, SEL _cmd) {
     return nil;
 }
@@ -32,9 +34,12 @@ static id dummyMethodStacktrace(id self, SEL _cmd) {
     return nil;
 }
 
+
+#pragma mark - Defines
+
 #define IMP_getter(method)                              \
 (imp_implementationWithBlock(^IMP(id self, SEL _cmd) {  \
-    return (IMP) (method);                                \
+    return (IMP) (method);                              \
 }))
 
 #define IMP_getterBlock(block)                          \
@@ -42,30 +47,33 @@ static id dummyMethodStacktrace(id self, SEL _cmd) {
     return imp_implementationWithBlock(block);          \
 }))
 
+#define SINGLETON(name, constructor)        \
++ (instancetype)name                        \
+{                                           \
+    static NONull *name##Singleton = nil;   \
+    if (!name##Singleton) {                 \
+        name##Singleton = constructor;      \
+    }                                       \
+    return name##Singleton;                 \
+}
+
+#pragma mark - NONull class
+
 @implementation NONull
 
-+ (instancetype)null
-{
-    static NONull *nullSingleton = nil;
-    if (!nullSingleton) {
-        nullSingleton = [[NONull alloc] init];
-    }
-    return nullSingleton;
-}
+#pragma mark Constructors
 
-+ (instancetype)blackhole
-{
-    static NONull *blackhole = nil;
-    if (!blackhole) {
-        blackhole = [NONull nullWithOptions:@{NONullBlackHole: @YES}];
-    }
-    return blackhole;
-}
+SINGLETON(null,      [NONull nullWithOptions:nil])
+SINGLETON(blackhole, [NONull nullWithOptions:@{NONullBlackHole: @YES}])
+SINGLETON(traceable, [NONull nullWithOptions:@{NONullTraceable: @YES}])
 
 + (instancetype)nullWithOptions:(NSDictionary *)options
 {
     return [[[self nullClassWithOptions:options] alloc] init];
 }
+
+
+#pragma mark Class Builder
 
 + (Class)nullClassWithOptions:(NSDictionary *)options;
 {
@@ -93,6 +101,8 @@ static id dummyMethodStacktrace(id self, SEL _cmd) {
     return NullClass;
 }
 
+#pragma mark Dyanamic calls support
+
 + (IMP)dummyMethodIMP
 {
     // Default dummy method implementation
@@ -111,8 +121,11 @@ static id dummyMethodStacktrace(id self, SEL _cmd) {
     return YES;
 }
 
+#pragma mark Comparator
+
 - (BOOL)isEqual:(id)object
 {
+    // All null object should act as equal objects
     return [object isKindOfClass:[NONull class]];
 }
 
