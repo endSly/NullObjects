@@ -4,9 +4,17 @@ NullObjects
 NullObjects is a library for building [Null
 Objects](http://en.wikipedia.org/wiki/Null_Object_pattern) in Objective-C. It's inspired by Ruby's [Naught](https://github.com/avdi/naught).
 
+### Adding NullObjects to your project
+
+#### CocoaPods
+
+[CocoaPods](http://cocoapods.org) is the best way to include NullObjects in your project.
+
+Include <code>pod 'NullObjects', '~> 0.0.1'</code> to your <code>Podfile</code>.
+
 ### Usage
 
-<code>NONull</code> is a replacement for NSNull but it acts more similarity to nil. It never raises an exception when method is call.
+<code>NONull</code> is a replacement for <code>NSNull</code> but it acts more similarity to nil. It never raises an exception when method is call.
 
 #### Simple Null Object
 
