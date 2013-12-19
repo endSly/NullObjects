@@ -1,3 +1,5 @@
 language: objective-c
 xcode_project: NullObjects.xcodeproj
 xcode_scheme: NullObjects
+env:
+  - XCODEBUILD_SETTINGS="-sdk iphonesimulator"
