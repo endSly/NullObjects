@@ -1,3 +1,3 @@
 language: objective-c
 xcode_project: NullObjects.xcodeproj
-xcode_scheme: NullObjectsTests
+xcode_scheme: NullObjects
